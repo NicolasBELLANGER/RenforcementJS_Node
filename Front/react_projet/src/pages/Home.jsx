@@ -1,13 +1,15 @@
-import {useState, useEffect} from "react";
-import {Link} from "react-router-dom";
+import { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { BookContext } from '../context/BookContext.jsx';
 
 function Home() {
-    const [books, setBooks] = useState([])
+    const { updateFavoriteBook } = useContext(BookContext);
+    const [books, setBooks] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://renforcementjs-node.onrender.com/api/books');
+                const response = await fetch('https://nodeexpresscourse-m1-dev-g3-effrei.onrender.com/api/books');
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -18,17 +20,23 @@ function Home() {
             }
         };
 
-        fetchData()
-    }, [] )
+        fetchData();
+    }, []);
+
+    const handleClick = (event) => {
+        updateFavoriteBook(event.target.id);
+    };
 
     return (
         <div>
             <h1>Accueil</h1>
             <p>test</p>
             <ul>
-                {books.map(book => (
+                {books.map((book) => (
                     <li key={book._id}>
-                        <Link to={`/books/${book._id}`}> {book.label}</Link>
+                        <Link to={`/books/${book._id}`} id={book.label} onClick={handleClick}>
+                            {book.label}
+                        </Link>
                     </li>
                 ))}
             </ul>
